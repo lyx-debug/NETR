@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+
+    <!-- 添加预加载翻译文件 -->
+    <link rel="preload" href="./i18n/zh.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="./i18n/en.json" as="fetch" crossorigin="anonymous">
+    
+    <title>南京地铁NETR</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./locale.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- 左侧导航按钮 -->
+        <a href="about.html" target="_self">关于</a>
+        <a id="locale-selection" onclick="" target="_self">英文/English</a>
+        <a href="choosecity.html" target="_self"> </a>
+        <div class="dropdown">
+            <span class="dropbtn">自定义背景</span>
+            <div class="dropdown-content">
+                <a href="#" onclick="document.getElementById('bgUpload').click();">选择图片</a>
+                <a href="#" onclick="resetBg();">重置背景</a>
+            </div>
+        </div>
+        <input type="file" id="bgUpload" accept="image/*" style="display: none" onchange="changeBg(event)">
+
+        <div class="dropdown">
+            <span class="dropbtn">更多</span>
+            <div class="dropdown-content">
+                <a href="linequery.html" target="_self">线路查询</a>
+                <a href="feedback.html" target="_self">反馈</a>
+            </div>
+        </div>
+
+        <!-- 右侧图片占位符 
+        <img src="placeholder.png" alt="">-->
+    </div>
+
+    <h1 style="text-align: center; color: #007ACC; margin-bottom: 30px; font-family: SimHei">南京地铁NETR</h1>
+    
+
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="stationInput"
+            placeholder
+            oninput="showSuggestions(this.value)"
+            onclick="showSuggestions(this.value)"
+            onkeydown="if (event.key == 'Enter') { document.getElementById('stationInput').value = firstStation; searchStation(); }"
+        >
+        <button onclick="searchStation()">搜索</button>
+    </div>
+    <div id="autocomplete-list" class="autocomplete-items"></div>
+    <div id="result" class="result"></div>
+    <div id="lineInfo"></div>
+
+    <script src="./station_js/stationdata.js"></script>
+    <script src="./pinyinpro.min.js"></script>
+    <script src="./timetable.js"></script>
+    <script src="./search.js"></script>
+
+    
+    <script>
+        let currentNewsPage = 0;
+        let totalNewsPages = 3;
+
+        function toggleNewsExpansion() {
+            const ticker = document.querySelector('.news-ticker');
+            const expanded = document.querySelector('.expanded-news');
+            const overlay = document.querySelector('.blur-overlay');
+
+            if (ticker.classList.contains('expanded')) {
+                ticker.classList.remove('expanded');
+                expanded.style.display = 'none';
+                overlay.style.display = 'none';
+            } else {
+                ticker.classList.add('expanded');
+                expanded.style.display = 'block';
+                overlay.style.display = 'block';
+                updatePageIndicator();
+            }
+        }
+
+        function prevNewsPage() {
+            if (currentNewsPage > 0) {
+                currentNewsPage--;
+                showNewsPage(currentNewsPage);
+            }
+        }
+
+        function nextNewsPage() {
+            if (currentNewsPage < totalNewsPages - 1) {
+                currentNewsPage++;
+                showNewsPage(currentNewsPage);
+            }
+        }
+
+        function showNewsPage(pageIndex) {
+            const pages = document.querySelectorAll('.news-page');
+            pages.forEach((page, index) => {
+                if (index === pageIndex) {
+                    page.classList.add('active');
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+            updatePageIndicator();
+        }
+
+        function updatePageIndicator() {
+            const indicator = document.querySelector('.page-indicator');
+            indicator.textContent = `${currentNewsPage + 1}/${totalNewsPages}`;
+        }
+
+        function changeBg(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = `url(${e.target.result})`;
+                    document.body.classList.add('custom-bg');
+                    // 保存到 localStorage
+                    localStorage.setItem('customBg', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetBg() {
+            document.body.style.backgroundImage = '';
+            document.body.classList.remove('custom-bg');
+            localStorage.removeItem('customBg');
+        }
+
+        // 页面加载时恢复背景
+        window.onload = function() {
+            const savedBg = localStorage.getItem('customBg');
+            if (savedBg) {
+                document.body.style.backgroundImage = `url(${savedBg})`;
+                document.body.classList.add('custom-bg');
+            }
+        };
+    </script>
+
+    <div class="blur-overlay"></div>
+</body>
+</html>
