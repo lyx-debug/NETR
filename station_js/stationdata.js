@@ -312,6 +312,16 @@ const metroLines = [
             { name: "中胜"},
             { name: "小行" },
             { name: "安德门" } ,
+            { name: "共青团路" },
+            { name: "雨花台" },
+            { name: "卡子门" },
+            { name: "机场跑道旧址" },
+            { name: "大校场" },
+            { name: "承天大道" },
+            { name: "高桥门" },
+            { name: "杨庄" },
+            { name: "石杨路" },
+            { name: "东麒路" },
         ]
     },
 
